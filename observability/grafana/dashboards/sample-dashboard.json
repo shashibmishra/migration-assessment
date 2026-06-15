@@ -1,0 +1,72 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "#000000",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "panels": [
+    {
+      "type": "graph",
+      "title": "Node CPU Usage (rate)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "avg by(instance)(rate(node_cpu_seconds_total{mode!='idle'}[5m]))",
+          "format": "time_series",
+          "interval": "",
+          "legendFormat": "{{instance}}"
+        }
+      ],
+      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8}
+    },
+    {
+      "type": "graph",
+      "title": "Node Memory Available %",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "(node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100",
+          "format": "time_series",
+          "legendFormat": "{{instance}}"
+        }
+      ],
+      "gridPos": {"x": 12, "y": 0, "w": 12, "h": 8}
+    },
+    {
+      "type": "graph",
+      "title": "Application 5xx Rate",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum(rate(http_requests_total{status=~'5..'}[5m]))",
+          "format": "time_series",
+          "legendFormat": "5xx requests"
+        },
+        {
+          "expr": "sum(rate(http_requests_total[5m]))",
+          "format": "time_series",
+          "legendFormat": "all requests"
+        }
+      ],
+      "gridPos": {"x": 0, "y": 8, "w": 24, "h": 8}
+    }
+  ],
+  "schemaVersion": 16,
+  "style": "dark",
+  "tags": ["migration", "sample"],
+  "title": "Sample App - Cluster Overview",
+  "timezone": "browser",
+  "version": 1
+}

@@ -1,0 +1,27 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: sample-app-rules
+  namespace: monitoring
+spec:
+  groups:
+    - name: sample-app.rules
+      rules:
+        - alert: High5xxRate
+          expr: |
+            sum(increase(http_requests_total{status=~"5.."}[5m])) / sum(increase(http_requests_total[5m])) > 0.05
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "High 5xx error rate"
+            description: "More than 5% of requests are returning 5xx in the last 5 minutes."
+
+        - alert: PodRestartHigh
+          expr: increase(kube_pod_container_status_restarts_total[15m]) > 0
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Pod restart detected"
+            description: "Pod has restarted recently."

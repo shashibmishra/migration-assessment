@@ -1,0 +1,29 @@
+name: CI/CD Pipeline - Build, Scan, Package, Push
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build image
+        uses: docker/build-push-action@v4
+        with:
+          push: false
+          tags: ghcr.io/${{ github.repository }}/sample-app:latest
+      - name: Scan image with Trivy
+        uses: aquasecurity/trivy-action@v1
+        with:
+          image-ref: ghcr.io/${{ github.repository }}/sample-app:latest
+      - name: Helm package
+        run: |
+          helm package helm/sample-chart -d artifacts
+      - name: Push image to ACR
+        run: echo "Replace with ACR push step"

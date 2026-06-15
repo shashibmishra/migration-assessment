@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: observability-project
+  namespace: argocd
+spec:
+  description: Project for observability components (Prometheus/Grafana/Alertmanager)
+  sourceRepos:
+    - "*"
+  destinations:
+    - namespace: monitoring
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"
+  namespaceResourceBlacklist: []
+  orphanedResources:
+    warn: true

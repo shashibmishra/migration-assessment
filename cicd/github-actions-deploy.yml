@@ -1,0 +1,35 @@
+name: Deploy to AKS via GitHub Actions
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Set AKS credentials
+        uses: azure/aks-set-context@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          cluster-name: ${{ secrets.AKS_CLUSTER_NAME }}
+          resource-group: ${{ secrets.AKS_RESOURCE_GROUP }}
+      - name: Build and push image
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: ${{ secrets.ACR_LOGIN_SERVER }}/sample-app:${{ github.sha }}
+      - name: Scan image with Trivy
+        uses: aquasecurity/trivy-action@v1
+        with:
+          image-ref: ${{ secrets.ACR_LOGIN_SERVER }}/sample-app:${{ github.sha }}
+      - name: Update Helm values and deploy
+        run: |
+          helm upgrade --install sample-app helm/sample-chart -f helm/sample-chart/values-prod.yaml \
+            --set image.repository=${{ secrets.ACR_LOGIN_SERVER }}/sample-app \
+            --set image.tag=${{ github.sha }}

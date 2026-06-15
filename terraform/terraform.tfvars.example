@@ -1,0 +1,9 @@
+# Example terraform.tfvars
+prefix = "demo"
+location = "eastus"
+
+# Backend storage (create storage account + container beforehand)
+backend_rg_name = "demo-tfstate-rg"
+backend_storage_account_name = "demotfstatestorage"
+backend_container_name = "tfstate"
+backend_key = "migration-assessment.tfstate"

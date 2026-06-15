@@ -1,0 +1,20 @@
+trigger:
+  branches:
+    include:
+      - main
+
+stages:
+  - stage: Build
+    jobs:
+      - job: BuildAndScan
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: HelmInstaller@1
+            inputs:
+              helmVersionToInstall: 'latest'
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: |
+                echo "Build and scan steps go here"

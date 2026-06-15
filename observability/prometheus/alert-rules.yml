@@ -1,0 +1,55 @@
+groups:
+  - name: node.rules
+    rules:
+      - alert: NodeHighCPU
+        expr: |
+          avg by (instance)(rate(node_cpu_seconds_total{mode!="idle"}[5m])) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Node high CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is above 80% for more than 5 minutes."
+
+      - alert: NodeLowMemory
+        expr: |
+          (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) < 0.15
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Node low available memory on {{ $labels.instance }}"
+          description: "Available memory is below 15% for more than 5 minutes."
+
+  - name: pod.rules
+    rules:
+      - alert: PodRestartHigh
+        expr: |
+          increase(kube_pod_container_status_restarts_total[15m]) > 0
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Pod restart detected"
+          description: "Pod {{ $labels.pod }} has restarted recently."
+
+      - alert: KubeAPIDown
+        expr: up{job="kube-apiserver"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Kubernetes API server down"
+          description: "The API server is not responding."
+
+  - name: application.rules
+    rules:
+      - alert: High5xxRate
+        expr: |
+          sum(increase(http_requests_total{status=~"5.."}[5m])) / sum(increase(http_requests_total[5m])) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High 5xx error rate"
+          description: "More than 5% of requests are returning 5xx in the last 5 minutes."

@@ -1,0 +1,27 @@
+# Checklist
+
+- Git repositories:
+  - `gitops/` repository showing `applications` and `environments` structure
+  - `terraform/` with reusable modules and root configs
+  - `cicd/` pipelines (GitHub Actions / Azure DevOps templates)
+- CI/CD evidence:
+  - Build logs, image scan reports (Trivy/Snyk/Defender), Helm packages, and ACR push events
+  - Pull request validation and branch protection screenshots
+- GitOps evidence:
+  - ArgoCD/Flux sync screenshots
+  - Demonstrated automated sync and rollback using Git history
+  - Promotion flow from Dev → QA → Prod
+- Security & Compliance:
+  - Trivy/Checkov/Kubesec reports and remediation notes
+  - Policy examples and admission control validation (Kyverno/OPA)
+- Infrastructure:
+  - Terraform plan/apply snippets, remote state configuration, and module examples
+  - Description of network topology, private endpoints, NAT, firewall, and identity design
+- Observability & SRE:
+  - Grafana dashboards (JSON), Prometheus alert rules, and SLOs/incident runbooks
+- Migration artifacts:
+  - Export bundles from Rancher (`discovery/exports`) showing manifests and Helm values
+  - Migration factory templates and onboarding guide
+- Demo & runbook:
+  - Step-by-step migration runbook used during the assessment
+  - Short demo script or recorded video showing a migration wave

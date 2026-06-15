@@ -1,0 +1,11 @@
+replicaCount: 1
+
+image:
+  repository: myregistry/sample-app
+  tag: "0.1.0-dev"
+
+service:
+  type: ClusterIP
+  port: 80
+
+env: dev
